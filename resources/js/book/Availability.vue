@@ -1,8 +1,10 @@
 <template>
     <div>
         <h6 class="text-uppercase text-secondary font-weight-bolder">Check Availability
-            <span class="text-success" v-if="hasAvailability">(AVAILABLE)</span>
-            <span class="text-danger" v-if="noAvailability">(NOT AVAILABLE)</span>
+            <transition name="fade">
+                <span class="text-success" v-if="hasAvailability">(AVAILABLE)</span>
+                <span class="text-danger" v-if="noAvailability">(NOT AVAILABLE)</span>
+            </transition>
         </h6>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -29,7 +31,10 @@
                 />
                 <v-errors :errors="errorFor('to')"></v-errors>
             </div>
-            <button class="btn btn-secondary btn-block" @click="check" :disabled="loading">Check!</button>
+            <button class="btn btn-secondary btn-block" @click="check" :disabled="loading">
+                <span v-if="!loading">Check!</span>
+                <span v-if="loading"><i class="fas fa-spinner fa-spin"></i>Checking...</span>
+            </button>
         </div>
     </div>
 </template>
@@ -45,8 +50,8 @@ export default{
     },
     data(){
         return{
-            from: this.$store.lastSearch.from,
-            to: this.$store.lastSearch.to,
+            from: this.$store.state.lastSearch.from,
+            to: this.$store.state.lastSearch.to,
             loading:false,
             status:null,
         }
