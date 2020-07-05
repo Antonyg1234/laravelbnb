@@ -26,6 +26,7 @@ $suffixes = [
 $factory->define(Bookable::class, function (Faker $faker) use($suffixes) {
     return [
         'title' => $faker->city.' '.Arr::random($suffixes),
-        'description' => $faker->text()
+        'description' => $faker->text(),
+        'price' => random_int(15,650)
     ];
 });

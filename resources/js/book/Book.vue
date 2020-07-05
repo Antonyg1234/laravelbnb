@@ -16,7 +16,25 @@
             <review-list :bookable-id="this.$route.params.id"></review-list>
         </div>
         <div class="col-md-4 pb-4">
-            <availability :bookable-id="this.$route.params.id"></availability>
+            <availability class="mb-4" :bookable-id="this.$route.params.id"
+                        @availability="checkPrice($event)">
+            </availability>
+            <transition name="fade">
+                <price-breakdown v-if="price" :price="price" class="mb-4"></price-breakdown>
+            </transition>
+            <transition name="fade">
+                <button class="btn btn-outline-secondary btn-block"
+                    v-if="price" @click="addToBasket" :disabled="inBasketAlready">
+                    Book now
+                </button>
+            </transition>
+            <button class="btn btn-outline-secondary btn-block"
+                    v-if="inBasketAlready" @click="removeFromBasket">
+                    Remove From Basket
+            </button>
+            <div v-if="inBasketAlready" class="mt-4 text-muted warning">
+                Seems like you've already added this object to basket already. If you want to change dates remove from the basket first.
+            </div>
         </div>
     </div>
 </template>
@@ -24,16 +42,20 @@
 <script>
 import Availability from './Availability';
 import ReviewList from './ReviewList';
+import { mapState } from 'vuex';
+import PriceBreakdown from './PriceBreakdown'
 
 export default{
     components:{
         Availability,
-        ReviewList
+        ReviewList,
+        PriceBreakdown
     },
     data(){
         return{
             bookable:null,
-            loading:false
+            loading:false,
+            price:null
         }
     },
     created(){
@@ -43,6 +65,58 @@ export default{
             this.bookable =  response.data.data;
             this.loading = false;
         })
+    },
+    computed:{
+        ...mapState({
+            lastSearch : 'lastSearch',
+        }),
+        inBasketAlready(){
+            if(null == this.bookable){
+                return false
+            }
+            return this.$store.getters.inBasketAlready(this.bookable.id);
+        }
+    },
+    //this is similar wary to code which is used up in computed properties
+    // computed:mapState({
+    //     lastSearch : 'lastSearch',
+    //     inBasketAlready(state){
+    //         if(null == this.bookable){
+    //             return false
+    //         }
+    //         return state.basket.items.reduce((result,item) => result || item.bookable.id == this.bookable.id,false);
+    //     }
+    // }),
+    methods:{
+        async checkPrice(hasAvailability){
+            if(hasAvailability){
+                try{
+                    this.price = (await axios.get(
+                        `/api/bookable/${this.bookable.id}/price?from=${this.lastSearch.from}&to=${this.lastSearch.to}`
+                        )).data.data;
+                }catch(err){
+                    this.price = null;
+                }
+            }else{
+                this.price = null;
+            }
+        },
+        addToBasket(){
+            this.$store.dispatch('addToBasket',{
+                bookable : this.bookable,
+                price : this.price,
+                dates : this.lastSearch
+            });
+        },
+        removeFromBasket(){
+            this.$store.dispatch("removeFromBasket",this.bookable.id);
+        }
     }
 }
 </script>
+
+<style scoped>
+    .warning{
+        font-size: 0.7rem;
+    }
+</style>
