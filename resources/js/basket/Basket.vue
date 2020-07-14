@@ -2,15 +2,62 @@
     <div>
         <div class="row">
             <div class="col-md-8">
-                Checkout Forms
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-control" name="first_name">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control" name="last_name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <label for="email">Email</label>
+                        <input type="text" class="form-control" name="email">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="street">Street</label>
+                        <input type="text" class="form-control" name="street">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" name="country">
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" name="city">
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label for="zip">Zip</label>
+                        <input type="text" class="form-control" name="zip">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <button type="submit" class="btn btn-lg btn-primary btn-block">
+                            Book Now!
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="d-flex justify-content-between">
                     <h6 class="text-uppercase text-secondary font-weight-bolder">Your Cart</h6>
-                    <!-- <h6 class="badge badge-secondary text-uppercase">
-                        <span v-if="itemsinBasket">Items {{ itemsinBasket }}</span>
+                    <h6 class="badge badge-secondary text-uppercase">
+                        <span v-if="itemsInBasket">Items {{ itemsInBasket }}</span>
                         <span v-else>Empty</span>
-                    </h6> -->
+                    </h6>
                 </div>
                 <transition-group name="fade">
                     <div v-for="item in basket" :key="item.bookable.id">
